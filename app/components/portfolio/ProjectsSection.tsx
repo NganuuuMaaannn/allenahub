@@ -3,29 +3,15 @@ import { FaExternalLinkAlt } from "react-icons/fa";
 
 import { getProjectLinkPresentation } from "./data";
 import { SectionReveal, TileReveal } from "./PortfolioMotion";
+import type { PortfolioTheme } from "./themes";
 import type { Project } from "./types";
 
 type ProjectsSectionProps = {
   projects: Project[];
+  theme: PortfolioTheme;
 };
 
-const projectCardGradientClasses = [
-  "from-teal-400/5 via-slate-900/10 to-cyan-400/10",
-  "from-sky-400/5 via-slate-900/10 to-indigo-400/10",
-  "from-emerald-400/5 via-slate-900/10 to-teal-300/10",
-  "from-amber-300/5 via-slate-900/10 to-orange-400/10",
-  "from-rose-300/5 via-slate-900/10 to-fuchsia-400/10",
-] as const;
-
-const projectCardGlowClasses = [
-  "from-teal-300/5 via-cyan-300/10 to-transparent",
-  "from-sky-300/5 via-indigo-300/10 to-transparent",
-  "from-emerald-300/5 via-teal-300/10 to-transparent",
-  "from-amber-200/5 via-orange-300/10 to-transparent",
-  "from-rose-200/5 via-fuchsia-300/10 to-transparent",
-] as const;
-
-export function ProjectsSection({ projects }: ProjectsSectionProps) {
+export function ProjectsSection({ projects, theme }: ProjectsSectionProps) {
   return (
     <div className="relative min-h-screen overflow-x-hidden">
       <SectionReveal
@@ -35,7 +21,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
       >
         <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className="text-2xl font-semibold uppercase tracking-[0.26em] text-teal-200">
+            <p className={`text-2xl font-semibold uppercase tracking-[0.26em] ${theme.classes.eyebrowText}`}>
               Projects
             </p>
           </div>
@@ -45,19 +31,19 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
           {projects.map((project, index) => {
             const projectLink = getProjectLinkPresentation(project);
             const cardGradientClass =
-              projectCardGradientClasses[index % projectCardGradientClasses.length];
+              theme.classes.cardGradients[index % theme.classes.cardGradients.length];
             const cardGlowClass =
-              projectCardGlowClasses[index % projectCardGlowClasses.length];
+              theme.classes.cardGlows[index % theme.classes.cardGlows.length];
 
             return (
               <TileReveal key={project.title} delay={0.06 + index * 0.06} className="h-full">
                 <article
-                  className={`relative mt-auto flex h-full flex-col overflow-hidden rounded-4xl border border-white/10 bg-linear-to-br ${cardGradientClass} p-5 shadow-[0_18px_60px_rgba(2,6,23,0.36)] backdrop-blur transition hover:-translate-y-1 hover:border-teal-300/30`}
+                  className={`relative mt-auto flex h-full flex-col overflow-hidden rounded-4xl border bg-linear-to-br ${cardGradientClass} p-5 backdrop-blur transition hover:-translate-y-1 ${theme.classes.cardShell}`}
                 >
                   <div
                     className={`pointer-events-none absolute inset-0 bg-linear-to-br ${cardGlowClass} opacity-30`}
                   />
-                  <div className="pointer-events-none absolute -right-16 top-0 h-40 w-40 rounded-full bg-white/10 blur-3xl" />
+                  <div className={`pointer-events-none absolute -right-16 top-0 h-40 w-40 rounded-full blur-3xl ${theme.classes.floatingGlow}`} />
 
                   <div className="group relative z-10 overflow-hidden rounded-[28px]">
                     <Image
@@ -69,10 +55,10 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                     />
                   </div>
 
-                  <div className="relative z-10 mt-0 text-sm leading-7 text-slate-300">
-                    <h3 className="mt-5 text-2xl font-semibold leading-snug">{project.title}</h3>
+                  <div className={`relative z-10 mt-0 text-sm leading-7 ${theme.classes.bodyText}`}>
+                    <h3 className={`mt-5 text-2xl font-semibold leading-snug ${theme.classes.headingText}`}>{project.title}</h3>
                   </div>
-                  <p className="relative z-10 mt-2 text-sm leading-7 text-slate-300">
+                  <p className={`relative z-10 mt-2 text-sm leading-7 ${theme.classes.bodyText}`}>
                     {project.summary}
                   </p>
                   <div className="relative z-10 mt-auto flex flex-col gap-2 pt-10">
@@ -80,7 +66,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                       {project.stack.map((item) => (
                         <span
                           key={item}
-                          className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300"
+                          className={`rounded-full border px-3 py-1 text-xs font-medium ${theme.classes.chip}`}
                         >
                           {item}
                         </span>
@@ -92,13 +78,13 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
                         href={projectLink.href}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-2 mt-2 text-sm font-semibold text-slate-100 transition hover:text-teal-300"
+                        className={`mt-2 inline-flex items-center gap-2 text-sm font-semibold transition ${theme.classes.link}`}
                       >
                         {projectLink.label}
                         <FaExternalLinkAlt className="text-xs" />
                       </a>
                     ) : (
-                      <p className="text-sm mt-2 font-semibold text-red-300">{projectLink.label}</p>
+                      <p className={`mt-2 text-sm font-semibold ${theme.classes.privateText}`}>{projectLink.label}</p>
                     )}
                   </div>
                 </article>

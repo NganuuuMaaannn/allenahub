@@ -4,6 +4,8 @@ import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
+import { ThemeSelector } from "@/app/components/portfolio/ThemeSelector";
+import type { PortfolioThemeId } from "@/app/components/portfolio/types";
 
 const EyeIcon = ({ isVisible }: { isVisible: boolean }) =>
   isVisible ? <LuEye className="w-5 h-5" /> : <LuEyeClosed className="w-5 h-5" />;
@@ -24,6 +26,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [selectedThemeId, setSelectedThemeId] = useState<PortfolioThemeId>("aurora");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -177,6 +180,7 @@ export default function RegisterPage() {
             first_name: normalizedFirstName,
             last_name: normalizedLastName,
             name: fullName,
+            theme_id: selectedThemeId,
           },
         },
       });
@@ -289,7 +293,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-4xl">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold leading-tight text-slate-50 sm:text-6xl xl:text-5xl">
             Allena
@@ -312,6 +316,12 @@ export default function RegisterPage() {
           )}
 
           <form onSubmit={handleSendMagicLink} className="space-y-4">
+            <ThemeSelector
+              selectedThemeId={selectedThemeId}
+              onChange={setSelectedThemeId}
+              legend="Choose Portfolio Theme"
+            />
+
             {/* Name */}
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium text-slate-300 mb-2">

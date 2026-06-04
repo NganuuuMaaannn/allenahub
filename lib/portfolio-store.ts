@@ -25,6 +25,10 @@ function getPortfolioSeed(user?: User | null) {
       typeof user?.user_metadata?.username === "string"
         ? user.user_metadata.username
         : null,
+    themeId:
+      typeof user?.user_metadata?.theme_id === "string"
+        ? user.user_metadata.theme_id
+        : null,
   };
 }
 

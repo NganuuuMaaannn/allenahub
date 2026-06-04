@@ -23,9 +23,11 @@ import {
   type HeroContact,
   type PortfolioContent,
   type PortfolioRow,
+  type PortfolioThemeId,
   type Project,
   type ProjectLinkType,
 } from "@/app/components/portfolio/types";
+import { ThemeSelector } from "@/app/components/portfolio/ThemeSelector";
 import { createClient } from "@/lib/supabase";
 
 const portfolioTable = "student_portfolios";
@@ -243,6 +245,16 @@ const projectLinkTypeLabelByValue: Record<ProjectLinkType, string> = {
   repository: "Open Repository",
   private: "Private Repository",
 };
+
+function getPortfolioSaveErrorMessage(message: string) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes("theme_id") && normalized.includes("schema cache")) {
+    return "The database is missing the theme_id column. Run supabase/add_theme_id_to_student_portfolios.sql in Supabase SQL Editor, then save again.";
+  }
+
+  return message;
+}
 
 type UploadStatus =
   | {
@@ -1221,7 +1233,7 @@ export function PortfolioEditor({
     if (error) {
       setSaveState({
         kind: "error",
-        message: error.message,
+        message: getPortfolioSaveErrorMessage(error.message),
       });
       return;
     }
@@ -1401,6 +1413,15 @@ export function PortfolioEditor({
             placeholder="Enter domain name here... (example: jenimel-pineda-portfolio)"
           />
         </Field>
+
+        <div className="mt-5">
+          <ThemeSelector
+            selectedThemeId={portfolio.themeId}
+            onChange={(themeId: PortfolioThemeId) =>
+              updatePortfolioField("themeId", themeId)
+            }
+          />
+        </div>
 
         <label className="mt-5 flex items-center gap-3 text-sm text-slate-200">
           <input
@@ -1725,6 +1746,19 @@ export function PortfolioEditor({
         title="Contact Methods"
         description="These links appear in the contact section. The View CV file is managed above in Hero Copy."
       >
+        <div className="space-y-5 mt-0 mb-3">
+          <Field label="Contact Message">
+            <textarea
+              value={portfolio.contactMessage}
+              onChange={(event) =>
+                updatePortfolioField("contactMessage", event.target.value)
+              }
+              className={textAreaClassName}
+              placeholder="Enter your contact message... (example: Reach out for collaboration, internship opportunities, or project work.)"
+            />
+          </Field>
+        </div>
+        
         <div className="space-y-5">
           {visibleContactMethods.map(({ item, index }) => (
             <div key={`contact-method-${index}`} className="space-y-4 rounded-xl border border-slate-700 p-4">

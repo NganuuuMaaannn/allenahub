@@ -11,6 +11,7 @@ import {
 
 import { findPrimaryEmail, getVisibleContactMethods } from "./data";
 import { SectionReveal, TileReveal } from "./PortfolioMotion";
+import type { PortfolioTheme } from "./themes";
 import type { ContactIconName, ContactMethod } from "./types";
 
 type ContactSectionProps = {
@@ -18,6 +19,7 @@ type ContactSectionProps = {
   portfolioSlug: string;
   contactMessage: string;
   contactMethods: ContactMethod[];
+  theme: PortfolioTheme;
   onNavigate: (sectionId: string) => void;
 };
 
@@ -34,6 +36,7 @@ export function ContactSection({
   ownerName,
   contactMessage,
   contactMethods,
+  theme,
   onNavigate,
 }: ContactSectionProps) {
   const visibleContactMethods = getVisibleContactMethods(contactMethods);
@@ -47,14 +50,14 @@ export function ContactSection({
         delay={0.06}
       >
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="rounded-[36px] bg-slate-950 p-8 text-white shadow-[0_28px_90px_rgba(2,6,23,0.44)] sm:p-10">
-            <p className="text-sm font-semibold uppercase tracking-[0.26em] text-teal-200">
+          <div className={`rounded-[36px] p-8 sm:p-10 ${theme.classes.contactPanel}`}>
+            <p className={`text-sm font-semibold uppercase tracking-[0.26em] ${theme.classes.eyebrowText}`}>
               Contact
             </p>
-            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
+            <h2 className={`mt-4 text-3xl font-semibold sm:text-4xl ${theme.classes.headingText}`}>
               Ready to reach {ownerName.split(" ")[0]} for collaboration, internship, or project work.
             </h2>
-            <p className="mt-6 text-base leading-8 text-slate-300">{contactMessage}</p>
+            <p className={`mt-6 text-base leading-8 ${theme.classes.bodyText}`}>{contactMessage}</p>
 
             <div className="mt-10 flex flex-wrap gap-4">
               <a
@@ -64,7 +67,7 @@ export function ContactSection({
                     event.preventDefault();
                   }
                 }}
-                className="inline-flex items-center gap-2 rounded-full bg-teal-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-teal-300"
+                className={`inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition ${theme.classes.primaryButton}`}
               >
                 Send an email
                 <FaArrowRight className="text-xs" />
@@ -72,7 +75,7 @@ export function ContactSection({
               <button
                 type="button"
                 onClick={() => onNavigate("projects")}
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-sm font-semibold text-white transition hover:border-white/40"
+                className={`inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm font-semibold transition ${theme.classes.secondaryButton}`}
               >
                 Back to projects
               </button>
@@ -90,15 +93,15 @@ export function ContactSection({
                     href={item.href}
                     target={external ? "_blank" : undefined}
                     rel={external ? "noreferrer" : undefined}
-                    className="flex flex-col h-full rounded-[30px] border border-white/10 bg-slate-900/66 p-6 shadow-[0_18px_60px_rgba(2,6,23,0.36)] transition hover:-translate-y-1 hover:border-teal-300/30"
+                    className={`flex h-full flex-col rounded-[30px] border p-6 shadow-[0_18px_60px_rgba(2,6,23,0.36)] transition hover:-translate-y-1 ${theme.classes.contactTile}`}
                   >
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-teal-300/12 text-teal-200">
+                    <div className={`flex h-11 w-11 items-center justify-center rounded-full border ${theme.classes.chip}`}>
                       <Icon />
                     </div>
-                    <p className="mt-5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                    <p className={`mt-5 text-xs font-semibold uppercase tracking-[0.2em] ${theme.classes.mutedText}`}>
                       {item.label}
                     </p>
-                    <p className="mt-2 text-lg font-semibold wrap-break-word text-slate-50">
+                    <p className={`mt-2 wrap-break-word text-lg font-semibold ${theme.classes.headingText}`}>
                       {item.value}
                     </p>
                   </a>

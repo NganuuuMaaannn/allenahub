@@ -16,6 +16,7 @@ import { ProjectsSection } from "./ProjectsSection";
 import { createClient } from "@/lib/supabase";
 import { revealEase } from "./PortfolioMotion";
 import { motion } from "framer-motion";
+import { getPortfolioTheme } from "./themes";
 
 type PortfolioPageProps = {
   portfolio: PortfolioContent;
@@ -166,32 +167,38 @@ export function PortfolioPage({
     });
   };
 
+  const theme = getPortfolioTheme(livePortfolio.themeId);
+
   return (
     <main className="portfolio-scrollbar-hidden relative overflow-hidden pb-16 text-slate-100">
       <PageIntroOverlay />
       <motion.div
-        className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,0.22),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(16,185,129,0.16),transparent_24%),linear-gradient(180deg,#050816_0%,#081120_42%,#0d1a2b_100%)]"
+        className={`pointer-events-none absolute inset-0 -z-20 ${theme.classes.pageBackground}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.1, ease: revealEase }}
       />
       <motion.div
-        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(rgba(148,163,184,0.3)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.3)_1px,transparent_1px)] bg-size-[70px_70px]"
+        className={`pointer-events-none absolute inset-0 -z-10 bg-size-[70px_70px] ${theme.classes.gridBackground}`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.15 }}
         transition={{ duration: 1.2, delay: 0.15, ease: revealEase }}
       />
 
-      <PortfolioHeader navItems={livePortfolio.navItems} onNavigate={scrollToSection} />
+      <PortfolioHeader
+        navItems={livePortfolio.navItems}
+        theme={theme}
+        onNavigate={scrollToSection}
+      />
       <HeroSection
         ownerName={livePortfolio.ownerName}
         headline={livePortfolio.headline}
-        intro={livePortfolio.intro}
         roleTitle={livePortfolio.roleTitle}
         specialty={livePortfolio.specialty}
         heroStats={livePortfolio.heroStats}
         heroContacts={livePortfolio.heroContacts}
         contactMethods={livePortfolio.contactMethods}
+        theme={theme}
         onNavigate={scrollToSection}
       />
       <AboutSection
@@ -201,18 +208,20 @@ export function PortfolioPage({
         roleTitle={livePortfolio.roleTitle}
         specialty={livePortfolio.specialty}
         capabilities={livePortfolio.capabilities}
+        theme={theme}
       />
-      <ProjectsSection projects={livePortfolio.projects} />
-      <CertificatesSection certificates={livePortfolio.certificates} />
+      <ProjectsSection projects={livePortfolio.projects} theme={theme} />
+      <CertificatesSection certificates={livePortfolio.certificates} theme={theme} />
       <ContactSection
         ownerName={livePortfolio.ownerName}
         portfolioSlug={livePortfolio.portfolioSlug}
         contactMessage={livePortfolio.contactMessage}
         contactMethods={livePortfolio.contactMethods}
+        theme={theme}
         onNavigate={scrollToSection}
       />
-      <PortfolioFooter ownerName={livePortfolio.ownerName} />
-      <BackToTopButton visible={showBackToTop} onClick={scrollToTop} />
+      <PortfolioFooter ownerName={livePortfolio.ownerName} theme={theme} />
+      <BackToTopButton visible={showBackToTop} theme={theme} onClick={scrollToTop} />
     </main>
   );
 }

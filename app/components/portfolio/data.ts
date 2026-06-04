@@ -9,11 +9,12 @@ import type {
   NavItem,
   PortfolioContent,
   PortfolioRow,
+  PortfolioThemeId,
   PortfolioUpsertPayload,
   Project,
   ProjectLinkType,
 } from "./types";
-import { projectLinkTypes } from "./types";
+import { portfolioThemeIds, projectLinkTypes } from "./types";
 
 const projectAccents = [
   "from-[#0f766e] via-[#14b8a6] to-[#99f6e4]",
@@ -268,6 +269,7 @@ type PortfolioSeed = {
   ownerName?: string | null;
   email?: string | null;
   username?: string | null;
+  themeId?: string | null;
 };
 
 function cloneHeroStats(heroStats: HeroStat[]) {
@@ -342,6 +344,7 @@ export function buildDefaultPortfolioContent(seed: PortfolioSeed = {}): Portfoli
   const defaultContactMethods = createDefaultContactMethods(ownerName, seed.email || undefined);
 
   return {
+    themeId: normalizePortfolioThemeId(seed.themeId),
     portfolioSlug,
     ownerName,
     headline: `Building clean digital experiences with story, structure, and strong UI rhythm.`,
@@ -352,7 +355,7 @@ export function buildDefaultPortfolioContent(seed: PortfolioSeed = {}): Portfoli
     roleTitle: "UI Designer and Frontend Developer",
     specialty: "Portfolio sites, admin tools, and modern landing pages.",
     contactMessage:
-      "Use this space to share your real email, phone number, social links, or booking page so classmates, recruiters, and collaborators can reach you.",
+      "Reach out for collaboration, internship opportunities, or project work.",
     isPublished: true,
     navItems: navItems.map((item) => ({ ...item })),
     heroStats: cloneHeroStats(defaultHeroStats),
@@ -377,6 +380,15 @@ function normalizeString(value: unknown, fallback: string) {
 
   const trimmed = value.trim();
   return trimmed || fallback;
+}
+
+export function normalizePortfolioThemeId(
+  value: unknown,
+  fallback: PortfolioThemeId = "aurora",
+): PortfolioThemeId {
+  return typeof value === "string" && portfolioThemeIds.includes(value as PortfolioThemeId)
+    ? (value as PortfolioThemeId)
+    : fallback;
 }
 
 function isProjectLinkType(value: unknown): value is ProjectLinkType {
@@ -617,6 +629,7 @@ export function normalizePortfolioContent(
       : fallback.heroContacts;
 
   return {
+    themeId: normalizePortfolioThemeId(row?.theme_id, fallback.themeId),
     portfolioSlug: normalizedSlug || fallback.portfolioSlug,
     ownerName: normalizeString(row?.owner_name, fallback.ownerName),
     headline: normalizeString(row?.headline, fallback.headline),
@@ -644,6 +657,7 @@ export function createPortfolioUpsertPayload(
 ): PortfolioUpsertPayload {
   const normalized = normalizePortfolioContent(
     {
+      theme_id: portfolio.themeId,
       portfolio_slug: portfolio.portfolioSlug,
       owner_name: portfolio.ownerName,
       headline: portfolio.headline,
@@ -666,6 +680,7 @@ export function createPortfolioUpsertPayload(
 
   return {
     owner_id: ownerId,
+    theme_id: normalized.themeId,
     portfolio_slug: normalized.portfolioSlug,
     owner_name: normalized.ownerName,
     headline: normalized.headline,

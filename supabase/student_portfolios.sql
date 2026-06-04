@@ -13,6 +13,7 @@ $$;
 create table if not exists public.student_portfolios (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid not null unique references auth.users(id) on delete cascade,
+  theme_id text not null default 'aurora',
   portfolio_slug text not null unique,
   owner_name text not null,
   headline text not null,
@@ -36,6 +37,9 @@ create table if not exists public.student_portfolios (
   constraint student_portfolios_slug_length
     check (char_length(portfolio_slug) between 3 and 60)
 );
+
+alter table public.student_portfolios
+  add column if not exists theme_id text not null default 'aurora';
 
 alter table public.student_portfolios
   add column if not exists about_image text not null default '/Sample.png';
@@ -156,3 +160,5 @@ using (
   bucket_id = 'portfolio-images'
   and (storage.foldername(name))[1] = auth.uid()::text
 );
+
+notify pgrst, 'reload schema';

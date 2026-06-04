@@ -24,6 +24,13 @@ export const projectLinkTypes = [
 
 export type ProjectLinkType = (typeof projectLinkTypes)[number];
 
+export const portfolioThemeIds = [
+  "aurora",
+  "canvas",
+] as const;
+
+export type PortfolioThemeId = (typeof portfolioThemeIds)[number];
+
 export type NavItem = {
   label: string;
   id: string;
@@ -74,6 +81,7 @@ export type HeroContact = {
 };
 
 export type PortfolioContent = {
+  themeId: PortfolioThemeId;
   portfolioSlug: string;
   ownerName: string;
   headline: string;
@@ -96,6 +104,7 @@ export type PortfolioContent = {
 export type PortfolioRow = {
   id: string;
   owner_id: string;
+  theme_id: string;
   portfolio_slug: string;
   owner_name: string;
   headline: string;
@@ -118,6 +127,7 @@ export type PortfolioRow = {
 
 export type PortfolioUpsertPayload = {
   owner_id: string;
+  theme_id: PortfolioThemeId;
   portfolio_slug: string;
   owner_name: string;
   headline: string;

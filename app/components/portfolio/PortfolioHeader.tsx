@@ -3,14 +3,17 @@
 import { useEffect, useState } from "react";
 import type { NavItem } from "./types";
 import { HeaderReveal } from "./PortfolioMotion";
+import type { PortfolioTheme } from "./themes";
 
 type PortfolioHeaderProps = {
   navItems: NavItem[];
+  theme: PortfolioTheme;
   onNavigate: (sectionId: string) => void;
 };
 
 export function PortfolioHeader({
   navItems,
+  theme,
   onNavigate,
 }: PortfolioHeaderProps) {
 
@@ -40,8 +43,8 @@ export function PortfolioHeader({
         }`}
     >
       <HeaderReveal delay={0.88}>
-        <div className="flex justify-center items-center rounded-full bg-slate-900/66 backdrop-blur-md border border-white/10 shadow-md px-6 py-3">
-          <nav className="flex items-center gap-6 md:gap-12 text-sm md:text-lg font-medium text-slate-200 overflow-x-auto no-scrollbar">
+        <div className={`flex items-center justify-center rounded-full border px-6 py-3 backdrop-blur-md ${theme.classes.headerShell}`}>
+          <nav className="no-scrollbar flex items-center gap-6 overflow-x-auto text-sm font-medium md:gap-12 md:text-lg">
             {navItems.map((item) => (
               <div
                 key={item.id}
@@ -49,7 +52,7 @@ export function PortfolioHeader({
               >
                 <button
                   onClick={() => onNavigate(item.id)}
-                  className="whitespace-nowrap transition-transform duration-300 transform hover:scale-105 hover:text-white"
+                  className={`transform whitespace-nowrap transition-transform duration-300 hover:scale-105 ${theme.classes.navText}`}
                 >
                   {item.label}
                 </button>

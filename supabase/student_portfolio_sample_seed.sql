@@ -26,6 +26,7 @@ begin
 
   insert into public.student_portfolios (
     owner_id,
+    theme_id,
     portfolio_slug,
     owner_name,
     headline,
@@ -44,6 +45,7 @@ begin
   )
   values (
     sample_owner_id,
+    'aurora',
     'student-portfolio',
     'Student Name',
     'Building clean digital experiences with story, structure, and strong UI rhythm.',
@@ -85,6 +87,7 @@ begin
   )
   on conflict (portfolio_slug) do update
   set
+    theme_id = excluded.theme_id,
     owner_name = excluded.owner_name,
     headline = excluded.headline,
     intro = excluded.intro,
